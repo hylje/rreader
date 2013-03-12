@@ -1,0 +1,10 @@
+Aihe: Uutistenlukija
+
+Toteutetaan sovellus, joka hakee uutisia netistä ja näyttää niitä yksi kerrallaan. Uutisesta näytetään tiivistelmä ja pari siihen liittyvää kommenttia.
+
+Uutiset haetaan Reddit-sivustolta. Käyttäjä voi valita, mistä kaikista osioista valitaan uutisia luettavaksi. Uutisia voi lukea vain yksi kerrallaan edeten. 
+
+Käyttäjät: lukemisesta kiinnostunut ihminen
+
+Kaikkien käyttäjien toiminnot: Osiovalinta ja katselutila
+
