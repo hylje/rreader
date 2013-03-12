@@ -7,6 +7,9 @@ Uutiset haetaan Reddit-sivustolta käyttäen valmista java-api-wrapperia.
 Käyttäjä voi valita, mistä kaikista osioista valitaan uutisia luettavaksi. 
 Uutisia voi lukea vain yksi kerrallaan edeten. Uutisen voi myös avata selaimeen.
 
+Jos aikaa riittää, uutisista voi näyttää myös tiivistelmän 
+Boilerpipe-kirjastolla kerätystä uutisen leipätekstistä.
+
 Käyttäjät: lukemisesta kiinnostunut ihminen
 
 Toiminnot: Osiovalinta ja katselutila
