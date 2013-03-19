@@ -1,1 +1,2 @@
 12.3.2013 14-16 projektin kasaaminen
+19.3.2013 12-16 ekat testit ja komponenttejen koodia
