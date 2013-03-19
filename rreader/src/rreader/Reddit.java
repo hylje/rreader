@@ -24,45 +24,15 @@ import org.json.simple.*;
  * @author leohonka
  */
 public class Reddit {
-    public AsyncHttpClient http;
+    public Http http;
     public Boolean logged_in = false;
     public Executor executor;
     
     public Reddit(Executor executor) {
-        this.http = new AsyncHttpClient();
+        this.http = new Http();
         this.executor = executor;
     }
-    
-    private class JSONHandler extends AsyncCompletionHandler<JSONObject> {
-        @Override
-        public JSONObject onCompleted(Response response) throws Exception {
-            return (JSONObject) JSONValue.parse(response.getResponseBody());
-        }
 
-        @Override
-        public void onThrowable(Throwable t) {
-            // Something wrong happened.
-        }
-    }
-    
-    public ListenableFuture<JSONObject> 
-            get(String url) throws IOException {
-        return this.http.prepareGet(url).execute(new JSONHandler());
-    }
-    
-    public ListenableFuture<JSONObject> 
-            post(String url, 
-                 Map<String, String> parameter_map) 
-            throws IOException {
-        ///fgadgoarg
-        BoundRequestBuilder req = this.http.preparePost(url);
-        for (String key : parameter_map.keySet()) {
-            req.addParameter(key, parameter_map.get(key));
-        }
-        ListenableFuture<JSONObject> ret = req.execute(new JSONHandler());
-        return ret;
-    }
-    
     /**
      * High level wrapper to Reddit posts. 
      *
@@ -74,7 +44,7 @@ public class Reddit {
     public ListenableFuture<List<Post>> 
             get_posts(String subreddit) 
            throws IOException {
-        final ListenableFuture<JSONObject> json_future = get("/r/" + subreddit);
+        final ListenableFuture<JSONObject> json_future = http.get("/r/" + subreddit);
         final ListenableFuture<List<Post>> ret = new ListenableFutureTask<List<Post>>();
         
         json_future.addListener(new Runnable() {
