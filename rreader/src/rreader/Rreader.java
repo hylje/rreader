@@ -14,6 +14,6 @@ public class Rreader {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // TODO set up event loop ("executor") over http client as well as the UI
     }
 }
