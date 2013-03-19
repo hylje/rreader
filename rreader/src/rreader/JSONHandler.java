@@ -8,6 +8,7 @@ import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 /**
  * Handler class that turns a HTTP response into a JSON object.
@@ -18,10 +19,11 @@ import org.json.simple.JSONValue;
  */
 
 class JSONHandler extends AsyncCompletionHandler<JSONObject> {
+    static final JSONParser parser = new JSONParser();
 
     @Override
     public JSONObject onCompleted(Response response) throws Exception {
-        return (JSONObject) JSONValue.parse(response.getResponseBody());
+        return (JSONObject) parser.parse(response.getResponseBody());
     }
 
     @Override

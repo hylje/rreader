@@ -6,6 +6,7 @@ package rreader;
 
 import com.ning.http.client.Response;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,4 +39,13 @@ public class JSONHandlerTest {
         
         assertEquals(ret.get("data"), "nope");
     }
+    
+    @Test(expected=ParseException.class)
+    public void testOnCompletedInvalidJSON() throws Exception {
+        Response resp = mock(Response.class);
+        when(resp.getResponseBody()).thenReturn("[[null, 123.45, \"a\\tb c\"]}, true");
+        
+        instance.onCompleted(resp);
+    }
+    
 }
