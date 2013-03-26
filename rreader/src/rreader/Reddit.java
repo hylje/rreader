@@ -41,40 +41,7 @@ public class Reddit {
         final ListenableFuture<JSONObject> json_future = http.get("http://www.reddit.com/r/" + subreddit + ".json");
         final ListenableFuture<List<Post>> ret = new ListenableFutureTask<List<Post>>();
         
-        json_future.addListener(new Runnable() {
-            @Override
-            public void run() {
-                List<Post> posts = new LinkedList<>();  
-                JSONObject json_posts;
-                try {
-                    json_posts = json_future.get();
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(Reddit.class.getName()).log(Level.SEVERE, null, ex);
-                    ret.content(posts);
-                    return;
-                }
-                JSONObject data = (JSONObject)json_posts.get("data");
-                JSONArray children = (JSONArray)data.get("children");
-                
-                for (Object post_o : children) {
-                    JSONObject post = (JSONObject)post_o;
-                    JSONObject post_data = (JSONObject)post.get("data");
-                    
-                    Post new_post = new Post(
-                        (String)post_data.get("id"),
-                        (String)post_data.get("url"),
-                        (String)post_data.get("title"),
-                        (String)post_data.get("author"));
-                    
-                    String selftext = (String)post_data.get("selftext");
-                    new_post.text_content = selftext != null ? selftext : "";
-                    
-                    posts.add(new_post);
-                }
-                
-                ret.content(posts);
-            }
-        }, executor);
+        json_future.addListener(new PostProcessor(json_future, ret), executor);
         
         return ret;
     }
