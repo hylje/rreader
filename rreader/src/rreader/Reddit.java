@@ -38,7 +38,7 @@ public class Reddit {
     public ListenableFuture<List<Post>> 
             get_posts(String subreddit) 
            throws IOException {
-        final ListenableFuture<JSONObject> json_future = http.get("/r/" + subreddit + ".json");
+        final ListenableFuture<JSONObject> json_future = http.get("http://www.reddit.com/r/" + subreddit + ".json");
         final ListenableFuture<List<Post>> ret = new ListenableFutureTask<List<Post>>();
         
         json_future.addListener(new Runnable() {
@@ -58,14 +58,16 @@ public class Reddit {
                 
                 for (Object post_o : children) {
                     JSONObject post = (JSONObject)post_o;
+                    JSONObject post_data = (JSONObject)post.get("data");
                     
                     Post new_post = new Post(
-                        (String)post.get("id"),
-                        (String)post.get("url"),
-                        (String)post.get("title"),
-                        (String)post.get("author"));
+                        (String)post_data.get("id"),
+                        (String)post_data.get("url"),
+                        (String)post_data.get("title"),
+                        (String)post_data.get("author"));
                     
-                    new_post.text_content = (String)post.get("selftext");
+                    String selftext = (String)post_data.get("selftext");
+                    new_post.text_content = selftext != null ? selftext : "";
                     
                     posts.add(new_post);
                 }

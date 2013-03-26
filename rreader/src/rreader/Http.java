@@ -23,7 +23,10 @@ public class Http {
     
     public ListenableFuture<JSONObject> 
             get(String url) throws IOException {
-        return this.http_client.prepareGet(url).execute(new JSONHandler());
+        return this.http_client
+                .prepareGet(url)
+                .addHeader("User-Agent", "RReader 0.1 by /u/hylje")
+                .execute(new JSONHandler());
     }
     
     public ListenableFuture<String> get_html(String url) throws IOException {

@@ -33,6 +33,7 @@ public class Post {
         this.url = url;
         this.title = title;
         this.author = author;
+        this.text_content = "";
     }
     
     /**
@@ -62,8 +63,12 @@ public class Post {
     
     @Override
     public String toString() {
+        String s_content = text_content.isEmpty() ? "no" : "YES!";
+        
         return String.format(
             "<Post: id=%s, title=%s, text_content=%s>",
-            id, title, text_content.isEmpty() ? "YES!" : "no");        
+            id, 
+            title, 
+            s_content);        
     }
 }
