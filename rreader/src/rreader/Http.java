@@ -26,6 +26,10 @@ public class Http {
         return this.http_client.prepareGet(url).execute(new JSONHandler());
     }
     
+    public ListenableFuture<String> get_html(String url) throws IOException {
+        return this.http_client.prepareGet(url).execute(new StringHandler());
+    }
+    
     public ListenableFuture<JSONObject> 
             post(String url, 
                  Map<String, String> parameter_map) 

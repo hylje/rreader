@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package rreader;
 
 import com.ning.http.client.*;
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.logging.Level;
@@ -44,7 +38,7 @@ public class Reddit {
     public ListenableFuture<List<Post>> 
             get_posts(String subreddit) 
            throws IOException {
-        final ListenableFuture<JSONObject> json_future = http.get("/r/" + subreddit);
+        final ListenableFuture<JSONObject> json_future = http.get("/r/" + subreddit + ".json");
         final ListenableFuture<List<Post>> ret = new ListenableFutureTask<List<Post>>();
         
         json_future.addListener(new Runnable() {
@@ -64,11 +58,16 @@ public class Reddit {
                 
                 for (Object post_o : children) {
                     JSONObject post = (JSONObject)post_o;
-                    posts.add(new Post(
+                    
+                    Post new_post = new Post(
                         (String)post.get("id"),
                         (String)post.get("url"),
                         (String)post.get("title"),
-                        (String)post.get("author")));
+                        (String)post.get("author"));
+                    
+                    new_post.text_content = (String)post.get("selftext");
+                    
+                    posts.add(new_post);
                 }
                 
                 ret.content(posts);
