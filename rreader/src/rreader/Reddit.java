@@ -45,7 +45,7 @@ public class Reddit {
             @Override
             public void run() {
                 List<Post> posts = new LinkedList<>();  
-                JSONObject json_posts = null;
+                JSONObject json_posts;
                 try {
                     json_posts = json_future.get();
                 } catch (InterruptedException | ExecutionException ex) {

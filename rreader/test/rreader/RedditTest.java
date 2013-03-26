@@ -60,7 +60,7 @@ public class RedditTest {
         futu = mock(ListenableFuture.class);
         
         // mock the get method to return our special future
-        when(instance.http.get("/r/foo")).thenReturn(futu);
+        when(instance.http.get(any(String.class))).thenReturn(futu);
         
         // the special future's addListener method 
         // needs to be hacked functional
@@ -82,16 +82,20 @@ public class RedditTest {
             put("data", new JSONObject() {{
                 put("children", new JSONArray() {{
                     add(new JSONObject() {{
-                        put("author", "hylje");
-                        put("url", "http://www.google.com/");
-                        put("id", "abcde");
-                        put("title", "Yet another fake Reddit post");
+                        put("data", new JSONObject() {{
+                            put("author", "hylje");
+                            put("url", "http://www.google.com/");
+                            put("id", "abcde");
+                            put("title", "Yet another fake Reddit post");
+                        }});
                     }});
                     add(new JSONObject() {{
-                        put("author", "hylje");
-                        put("url", "http://www.bash.org/");
-                        put("id", "abcdf");
-                        put("title", "You gotta be kidding me");
+                        put("data", new JSONObject() {{
+                            put("author", "hylje");
+                            put("url", "http://www.bash.org/");
+                            put("id", "abcdf");
+                            put("title", "You gotta be kidding me");
+                        }});
                     }});
                 }});
             }});
