@@ -4,7 +4,23 @@
  */
 package rreader;
 
+import com.ning.http.client.ListenableFuture;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.Position;
+import javax.swing.text.Segment;
+import javax.swing.text.html.HTMLDocument;
 
 /**
  *
@@ -16,10 +32,20 @@ public class AppWindow extends javax.swing.JFrame {
      * Creates new form AppWindow
      */
     public Reddit reddit;
+    public List<Post> posts;
+    public int post_index = 0;
     
     public AppWindow(Reddit reddit) {
         initComponents();
         this.reddit = reddit;
+        try {
+            // load some posts
+            final ListenableFuture<List<Post>> posts_future = reddit.get_posts("programming");
+            posts_future.addListener(new InitialPostHandler(posts_future), reddit.executor);
+            posts_future.addListener(new PostTitleHandler(), reddit.executor);
+        } catch (IOException ex) {
+            Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -31,6 +57,14 @@ public class AppWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TitlePane = new javax.swing.JTextPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        BlurbPane = new javax.swing.JTextPane();
+        NextButton = new javax.swing.JButton();
+        BrowserButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -40,6 +74,26 @@ public class AppWindow extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        TitlePane.setEditable(false);
+        TitlePane.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        TitlePane.setFocusable(false);
+        jScrollPane1.setViewportView(TitlePane);
+
+        BlurbPane.setEditable(false);
+        BlurbPane.setFocusable(false);
+        jScrollPane2.setViewportView(BlurbPane);
+
+        NextButton.setText("Next");
+        NextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NextButtonActionPerformed(evt);
+            }
+        });
+
+        BrowserButton.setText("Open in Browser");
+
+        jScrollPane3.setViewportView(jTextPane1);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -83,11 +137,37 @@ public class AppWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 662, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(NextButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BrowserButton)
+                        .addGap(0, 475, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 352, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NextButton)
+                    .addComponent(BrowserButton))
+                .addContainerGap())
         );
 
         pack();
@@ -103,6 +183,13 @@ public class AppWindow extends javax.swing.JFrame {
         // 2. futu = reddit.get_posts(subreddit)
         // 3. futu.addListener(... display the first post ...)
     }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextButtonActionPerformed
+        post_index++;
+        if (post_index < posts.size()) {
+            new PostTitleHandler().run();
+        }
+    }//GEN-LAST:event_NextButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -140,12 +227,80 @@ public class AppWindow extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextPane BlurbPane;
+    private javax.swing.JButton BrowserButton;
+    private javax.swing.JButton NextButton;
+    private javax.swing.JTextPane TitlePane;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     // End of variables declaration//GEN-END:variables
+
+    private class InitialPostHandler implements Runnable {
+
+        private final ListenableFuture<List<Post>> posts_future;
+
+        public InitialPostHandler(ListenableFuture<List<Post>> posts_future) {
+            this.posts_future = posts_future;
+        }
+
+        @Override
+        public void run() {
+            try {
+                posts = posts_future.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+            
+    private class PostTitleHandler implements Runnable {
+        /* PostTitleHandler updates the GUI text fields to show the currently 
+         selected post. The blurb field is asynchronously fetched if necessary. 
+         */
+        
+        @Override
+        public void run() {
+            Post post = posts.get(post_index);
+            set_title(post);
+            post.get_text_content(reddit).addListener(
+                    new PostBlurbHandler(), reddit.executor);
+        }
+        
+        public void set_title(Post post) {
+            Document title_doc = new HTMLDocument();
+            try {
+                title_doc.insertString(0, post.title, null);
+            } catch (BadLocationException ex) {
+                Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            TitlePane.setDocument(title_doc);
+        }
+    }
+    
+    private class PostBlurbHandler implements Runnable {
+
+        public PostBlurbHandler() {
+        }
+
+        @Override
+        public void run() {
+            Post post = posts.get(post_index);
+            Document blurb_doc = new HTMLDocument();
+            try {
+                blurb_doc.insertString(0, post.text_content, null);
+            } catch (BadLocationException ex) {
+                Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            BlurbPane.setDocument(blurb_doc);
+        }
+    }
 }
