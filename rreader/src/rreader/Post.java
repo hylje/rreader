@@ -9,6 +9,9 @@ import java.io.IOException;
 import rreader.handlers.BoilerpipeHandler;
 
 /**
+ * Representation of a Reddit submission
+ * 
+ * Only relevant fields are included from the full data.
  *
  * @author leohonka
  */
@@ -38,6 +41,7 @@ public class Post {
     }
     
     /**
+     * Populate text_content field
      *
      * @param reddit Reddit class to access API with
      * @return a ListenableFuture<Post> that runs when content is available

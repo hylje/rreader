@@ -1,15 +1,11 @@
 package rreader;
 
-import rreader.handlers.PostProcessor;
 import com.ning.http.client.*;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.*;
+import rreader.handlers.PostProcessor;
 
 /**
  * Wrapper over Reddit API.

@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package rreader.handlers;
 
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 /**
+ * Dummy handler that doesn't process the response content
  *
  * @author leohonka
  */

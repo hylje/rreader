@@ -1,11 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package rreader.handlers;
 
-import rreader.handlers.ContentListHandler;
-import rreader.handlers.RunWhenFinished;
 import com.ning.http.client.ListenableFuture;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +12,7 @@ import rreader.Reddit;
 import rreader.Rreader;
 
 /**
- * Console utility class 
+ * Console utility class
  *
  * @author leohonka
  */
@@ -43,11 +37,11 @@ public class PostHandler implements Runnable {
             return;
         }
         System.out.format("Got %d posts, processing...", posts.size());
-        List<ContentListHandler> handlers = new LinkedList<>();
-        Runnable finished = new RunWhenFinished(posts);
+        List<ChordHandler> handlers = new LinkedList<>();
+        Runnable finished = new PrintAllPosts(posts);
         for (Post p : posts) {
             ListenableFuture<Post> futu = p.get_text_content(reddit);
-            ContentListHandler handler = new ContentListHandler(futu, handlers, finished);
+            ChordHandler handler = new ChordHandler(futu, handlers, finished);
             futu.addListener(handler, executor);
             handlers.add(handler);
         }

@@ -13,6 +13,9 @@ import java.util.logging.Logger;
 import rreader.Post;
 
 /**
+ * Handler class for HTML pages
+ * 
+ * Attempts to extract relevant text from the markup
  *
  * @author leohonka
  */
