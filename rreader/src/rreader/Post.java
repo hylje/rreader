@@ -6,8 +6,7 @@ package rreader;
 
 import com.ning.http.client.ListenableFuture;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import rreader.handlers.BoilerpipeHandler;
 
 /**
  *
@@ -27,6 +26,8 @@ public class Post {
      * @param url External URL to post content
      * @param title Reddit user provided title for this post
      * @param author Reddit user responsible for this post
+     * @param text_content Cached text to display. Populated with an 
+     *                      asynchronous call to get_text_content.
      */
     public Post(String id, String url, String title, String author) {
         this.id = id;

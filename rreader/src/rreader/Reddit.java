@@ -1,5 +1,6 @@
 package rreader;
 
+import rreader.handlers.PostProcessor;
 import com.ning.http.client.*;
 import java.io.IOException;
 import java.util.LinkedList;

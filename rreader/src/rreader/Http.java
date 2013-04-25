@@ -4,6 +4,8 @@
  */
 package rreader;
 
+import rreader.handlers.JSONHandler;
+import rreader.handlers.StringHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import java.io.IOException;
